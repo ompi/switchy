@@ -14,7 +14,7 @@ void smiWrite(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint16_t data, u
   gpioDirOut(smi->mdio);
   
   if (preamble) {
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < smi->preambleLength; i++) {
       smiPutBit(smi, 1);
     }
   }
@@ -42,14 +42,14 @@ void smiWrite(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint16_t data, u
   smiPutBit(smi, 0);                             // idle
 }
 
-uint16_t smiRead(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint8_t preamble) {
+int smiRead(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint8_t preamble) {
   uint16_t data = 0;
-  int mask, i;
+  int mask, i, nack;
   
   gpioDirOut(smi->mdio);
   
   if (preamble) {
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < smi->preambleLength; i++) {
       smiPutBit(smi, 1);
     }
   }
@@ -68,7 +68,10 @@ uint16_t smiRead(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint8_t pream
 
   gpioDirIn(smi->mdio);
   
-  smiPutBit(smi, 0);                             // turn around
+  nack = smiGetBit(smi);                         // turn around
+  if (nack) {
+    return -1;
+  }
   
   for (mask = (1 << 15); mask > 0; mask >>= 1)   // data
     data |= smiGetBit(smi) ? mask : 0;

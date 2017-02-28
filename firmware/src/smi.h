@@ -8,11 +8,12 @@ typedef struct {
     gpio* mdc;
     gpio* mdio;
     uint32_t clockDelay;
+    uint8_t preambleLength;
 } smi;
 
 void smiInit(smi* smi);
 void smiWrite(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint16_t data, uint8_t preamble);
-uint16_t smiRead(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint8_t preamble);
+int smiRead(smi* smi, uint8_t phyAddress, uint8_t regAddress, uint8_t preamble);
 static inline void smiPutBit(smi* smi, int data);
 static inline int smiGetBit(smi* smi);
 static inline void smiBusyWaitHalf(smi* smi);
