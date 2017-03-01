@@ -40,27 +40,21 @@ int main() {
   SysTick_Config(12e6 / 1000);
 
   volatile uint64_t i;
-  uint16_t phy;
-  uint16_t reg;
 
-  char buf[256];
+  for (i = 0; i < 1000000; i++) {
+  }
+  uartPrintf(&uart, "dumping in 3...\r\n");
+  for (i = 0; i < 1000000; i++) {
+  }
+  uartPrintf(&uart, "dumping in 2...\r\n");
+  for (i = 0; i < 1000000; i++) {
+  }
+  uartPrintf(&uart, "dumping in 1...\r\n");
+  for (i = 0; i < 1000000; i++) {
+  }
 
   while(1) {
-    snprintf(buf, 256, "     0               1               \r\n");
-    uartSendString(&uart, buf);
-    snprintf(buf, 256, "     0123456789abcdef0123456789abcdef\r\n");
-    uartSendString(&uart, buf);
-
-    for (reg = 0; reg < 32; reg++) {
-      snprintf(buf, 256, "0x%.2x ", reg);
-      uartSendString(&uart, buf);
-      for (phy = 0; phy < 32; phy++) {
-        int ret = smiRead(&smi, phy, reg, 1);
-        uartSendByte(&uart, (ret != -1) ? '#' : ' ');
-      }
-      uartSendByte(&uart, '\r');
-      uartSendByte(&uart, '\n');
-    }
+    switchDumpStats(&uart, &smi);
     for (i = 0; i < 1000000; i++) {
     }
   }

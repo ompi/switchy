@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdarg.h>
+
 #include "uart.h"
 
 void uartInit(uart* uart) {
@@ -24,4 +27,13 @@ void uartSendString(uart* uart, char* data) {
     uartSendByte(uart, *data);
     data++;
   }
+}
+
+void uartPrintf(uart* uart, char* format, ...) {
+  char* buf[128];
+  va_list args;
+  va_start(args, format);
+  vsnprintf(buf, 256, format, args);
+  uartSendString(uart, buf);
+  va_end(args);
 }
