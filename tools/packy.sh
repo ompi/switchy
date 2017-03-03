@@ -19,10 +19,12 @@ wait_for_link() {
 setup_port() {
   dhcpcd -k ${interface}
 
+  iptables -F
+  ip6tables -F
   iptables -A INPUT -i ${interface} -j DROP
+  iptables -A OUTPUT -o ${interface} -p icmp --icmp-type echo-request -j ACCEPT
   iptables -A OUTPUT -o ${interface} -j DROP
   ip6tables -A OUTPUT -o ${interface} -j DROP
-  iptables -A OUTPUT -o ${interface} -p icmp --icmp-type echo-request -j ACCEPT
 
   ip link set ${interface} up
   ip addr add 10.0.0.1/24 dev ${interface}
@@ -38,7 +40,7 @@ setup_port
 for i in `seq 5`; do
   echo "poking port $i."
   wait_for_link up
-  sleep 1
+  sleep 2
   poke_port $i
   wait_for_link down
 done
