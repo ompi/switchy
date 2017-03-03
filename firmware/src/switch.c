@@ -126,6 +126,9 @@ void switchDumpStats(uart* uart, smi* smi) {
   for (whatever = 0; whatever < (1 << 12); whatever++) {
     smiWrite(smi, 0x1f, 0x1d, (1 << 15) | (0x4 << 12) | whatever, 1); // read whatever counters on all whatevers
 
+    while(smiRead(smi, 0x1f, 0x1d, 1) & (1 << 15)) {
+    }
+
     int low, high, count;
     high = smiRead(smi, 0x1f, 0x1e, 1);
     low = smiRead(smi, 0x1f, 0x1f, 1);
@@ -138,9 +141,6 @@ void switchDumpStats(uart* uart, smi* smi) {
     }
   }
 
-/*  uartPrintf(uart, "flush counters...\r\n");
-  smiWrite(smi, 0x1f, 0x1d, (1 << 15) | (0x1 << 12), 1); // flush all
-*/
   for (i = 0; i < 1000000; i++) {
   }
 }

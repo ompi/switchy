@@ -41,18 +41,6 @@ int main() {
 
   volatile uint64_t i;
 
-  for (i = 0; i < 1000000; i++) {
-  }
-  uartPrintf(&uart, "dumping in 3...\r\n");
-  for (i = 0; i < 1000000; i++) {
-  }
-  uartPrintf(&uart, "dumping in 2...\r\n");
-  for (i = 0; i < 1000000; i++) {
-  }
-  uartPrintf(&uart, "dumping in 1...\r\n");
-  for (i = 0; i < 1000000; i++) {
-  }
-
   while(1) {
     switchDumpStats(&uart, &smi);
     for (i = 0; i < 1000000; i++) {
